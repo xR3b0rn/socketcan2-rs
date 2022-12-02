@@ -5,7 +5,7 @@
 //! * epoll-support (what allows to wait on multiple CAN devices in the same thread)
 //! * Send CAN frames (not implemented yet)
 //! * Filter CAN frames (not implemented yet)
-//! Usage example
+//! # Usage example
 //! ```
 //! #[cfg(test)]
 //! fn on_recv(msg: &Box<Msg>, _user_data: &u64) {
