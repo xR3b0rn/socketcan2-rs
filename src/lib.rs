@@ -2,7 +2,7 @@
 //! # Features
 //! * Receive can frames
 //! * Accurate timestamps (timestamps also support multi threading in contrast to receiving the TIMESTAMP via an ioctl call, which does not support mt)
-//! * epoll-support (what allows to wait on multiple CAN devices in the same thread)
+//! * epoll-support (allows to wait on multiple CAN devices in the same thread)
 //! * Send CAN frames (not implemented yet)
 //! * Filter CAN frames (not implemented yet)
 //! # Usage example
@@ -264,7 +264,7 @@ impl<T> CanGroup<T> {
   }
   /// Receives the the next CAN frame which is avaiable and calls the provided callback. The callback
   /// may be called n times, in which n is the number of added CAN devices. The function blocks either until
-  /// at least one CAN devices has new data available, until timeout is reached or until a error happend.
+  /// at least one CAN devices has new data available, until timeout is reached or until an error happend.
   /// The timeout uses ms granularity. Duration::from_milliseconds(-1) can be passed to this function
   /// to disable the timeout functionallity. The function either returns true, if no timeout happened,
   /// false if a timeout happend or io::Error if an error happend.
