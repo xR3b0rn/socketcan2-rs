@@ -1,0 +1,12 @@
+[package]
+authors = ["Julian Weiss <weiss_julian@outlook.de"]
+description = "Linux SocketCAN library."
+documentation = "https://docs.rs/socketcan2"
+license = "MIT"
+name = "socketcan"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+libc = "*"
+chrono = "*"
