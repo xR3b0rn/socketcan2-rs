@@ -2,6 +2,7 @@
 authors = ["Julian Weiss <weiss_julian@outlook.de"]
 description = "Linux SocketCAN library."
 documentation = "https://docs.rs/socketcan2"
+repository = "https://github.com/xR3b0rn/socketcan2-rs"
 license = "MIT"
 name = "socketcan2"
 version = "0.1.2"
