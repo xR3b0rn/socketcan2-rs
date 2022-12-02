@@ -4,7 +4,7 @@ description = "Linux SocketCAN library."
 documentation = "https://docs.rs/socketcan2"
 license = "MIT"
 name = "socketcan2"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 [dependencies]
