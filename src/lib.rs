@@ -94,7 +94,7 @@ impl Can
       (*addr).can_family = AF_CAN as u16;
       let mut cifname = [0 as c_char; 17];
       for (i, ch) in ifname.chars().enumerate() {
-        cifname[i] = ch as i8;
+        cifname[i] = ch as c_char;
       }
       (*addr).can_ifindex = libc::if_nametoindex(&cifname as *const c_char) as i32;
       if (*addr).can_ifindex == 0 {
