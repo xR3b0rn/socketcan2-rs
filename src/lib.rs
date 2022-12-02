@@ -5,6 +5,33 @@
 //! * epoll-support (what allows to wait on multiple CAN devices in the same thread)
 //! * Send CAN frames (not implemented yet)
 //! * Filter CAN frames (not implemented yet)
+//! Usage example
+//! ```
+//! #[cfg(test)]
+//! fn on_recv(msg: &Box<Msg>, _user_data: &u64) {
+//!   println!("timestamp: {:?}", msg.timestamp());
+//!   print!("received CAN frame (id: {}): ", msg.can_id());
+//!   for i in 0..msg.len() {
+//!     print!("{} ", msg[i as usize]);
+//!   }
+//!   println!("");
+//! }
+//! 
+//! #[cfg(test)]
+//! mod tests {
+//!   use super::*;
+//!   #[test]
+//!   fn it_works() {
+//!     let can = Can::open("vcan0").unwrap();
+//!     let mut cg = CanGroup::<u64>::new();
+//!     cg.add(can, 0).unwrap();
+//!     match cg.next(Duration::milliseconds(-1), on_recv) {
+//!       Ok(no_timeout) => if !no_timeout { panic!("timeout"); },
+//!       Err(_) => panic!("error"),
+//!     }
+//!   }
+//! }
+//! ```
 
 use std::mem;
 use std::io;
@@ -55,7 +82,7 @@ pub struct Can {
 }
 impl Can
 {
-  /// Open CAN device by netdev name
+  /// Open CAN device by netdev name.
   pub fn open(ifname: &str) -> Result<Can, io::Error> {
     unsafe {
       if ifname.len() > 16 {
@@ -117,7 +144,7 @@ struct CanData<T> {
   can: Can, 
   user_data: T,
 }
-/// CAN message type
+/// CAN message type.
 pub struct Msg {
   msg: libc::msghdr,
   addr: libc::sockaddr_can,
@@ -141,12 +168,6 @@ impl Msg {
       msg.msg.msg_iov     = mem::transmute(&(*msg).iov);
       msg.msg.msg_control = mem::transmute(&(*msg).ctrlmsg[0]);
       msg.reset();
-      println!("namelen: {:?}", msg.msg.msg_namelen);
-      println!("msg_iov: {:?}", msg.msg.msg_iov);
-      println!("msg_iovlen: {:?}", msg.msg.msg_iovlen);
-      println!("msg_control: {:?}", msg.msg.msg_control);
-      println!("msg_controllen: {:?}", msg.msg.msg_controllen);
-      println!("msg_flags: {:?}", msg.msg.msg_flags);
       msg
     }
   }
@@ -157,15 +178,15 @@ impl Msg {
     self.msg.msg_controllen = mem::size_of_val(&self.ctrlmsg);
     self.msg.msg_flags      = 0;
   }
-  /// Get CAN ID
+  /// Get CAN ID.
   pub fn can_id(&self) -> u32 {
     self.frame.can_id
   }
-  /// Get DLC
+  /// Get DLC.
   pub fn len(&self) -> u8 {
     self.frame.len
   }
-  /// Get CAN FD flags
+  /// Get CAN FD flags.
   pub fn flags(&self) -> u8 {
     self.frame.flags
   }
@@ -173,13 +194,6 @@ impl Msg {
   pub fn timestamp(&self) -> io::Result<Duration> {
     unsafe {
       let mut cmsg = libc::CMSG_FIRSTHDR(&self.msg);
-      println!("namelen: {:?}", self.msg.msg_namelen);
-      println!("msg_iov: {:?}", self.msg.msg_iov);
-      println!("msg_iovlen: {:?}", self.msg.msg_iovlen);
-      println!("msg_control: {:?}", self.msg.msg_control);
-      println!("msg_controllen: {:?}", self.msg.msg_controllen);
-      println!("msg_flags: {:?}", self.msg.msg_flags);
-      println!("cmsg: {:?}", cmsg);
       loop {
         if cmsg.is_null() || (*cmsg).cmsg_level != libc::SOL_SOCKET {
           break
@@ -216,7 +230,7 @@ pub struct CanGroup<T> {
   msg: Box<Msg>,
 }
 impl<T> CanGroup<T> {
-  /// Creates an empty CanGroup instance
+  /// Creates an empty CanGroup instance.
   pub fn new() -> CanGroup<T> {
     unsafe {
       CanGroup::<T> {
